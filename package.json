@@ -1,0 +1,15 @@
+{
+  "name": "vercel-node-api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^1.0.0",
+    "express": "^4.17.1"
+  },
+  "engines": {
+    "node": "18.x"
+  }
+}
