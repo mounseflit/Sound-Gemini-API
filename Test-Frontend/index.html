@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload Audio</title>
+</head>
+<body>
+  <input type="file" id="audioInput" accept="audio/*">
+  <button id="uploadBtn">Upload & Process Audio</button>
+  <div id="response"></div>
+
+  <script>
+    const uploadBtn = document.getElementById('uploadBtn');
+    const audioInput = document.getElementById('audioInput');
+    const responseDiv = document.getElementById('response');
+
+    uploadBtn.addEventListener('click', async () => {
+      const file = audioInput.files[0];
+      if (!file) {
+        alert('Please select an audio file');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = async function(event) {
+        const base64Audio = event.target.result.split(',')[1]; // Extract the base64 part
+        const mimeType = file.type;
+
+        try {
+          const response = await fetch('https://your-vercel-api-url/api/gemini', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              audioFileBase64: base64Audio,
+              mimeType: mimeType,
+            }),
+          });
+
+          const data = await response.json();
+          if (response.ok) {
+            responseDiv.textContent = `Response: ${data.response}`;
+          } else {
+            responseDiv.textContent = `Error: ${data.error}`;
+          }
+        } catch (error) {
+          responseDiv.textContent = `Error: ${error.message}`;
+        }
+      };
+
+      reader.readAsDataURL(file);
+    });
+  </script>
+</body>
+</html>
